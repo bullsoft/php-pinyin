@@ -42,13 +42,13 @@ enum Dict_Type;
  */
 
 static zend_function_entry pinyin_methods[] = {
-	PHP_ME(Pinyin, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Pinyin, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(Pinyin, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
-	PHP_ME(Pinyin, loadDict, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(Pinyin, convert, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, loadDict, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, convert, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, multiConvert, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, exact, NULL, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+    {NULL, NULL, NULL}
 };
 /* }}} */
 
@@ -115,7 +115,7 @@ PHP_MINIT_FUNCTION(pinyin)
     zend_declare_class_constant_long(pinyin_ce, "TONE_DUOYONG_DICT", strlen("TONE_DUOYONG_DICT"), TONE_DUOYONG_DICT);
     zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT);
     
-	return SUCCESS;
+    return SUCCESS;
 }
 /* }}} */
 
@@ -175,13 +175,13 @@ PHP_METHOD(Pinyin, __destruct)
 
 PHP_METHOD(Pinyin, loadDict)
 {
-	char *path = NULL;
-	int len;
+    char *path = NULL;
+    int len;
     enum Dict_Type dict_type;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &path, &len, &dict_type) == FAILURE) {
-		return;
-	}
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &path, &len, &dict_type) == FAILURE) {
+        return;
+    }
 
     switch(dict_type) {
         case TONE_DICT:
@@ -205,14 +205,14 @@ PHP_METHOD(Pinyin, loadDict)
 
 PHP_METHOD(Pinyin, convert)
 {
-	char *characters = NULL;
-	int  len;
+    char *characters = NULL;
+    int  len;
     zend_bool get_tone = 0;
     bool result = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &characters, &len, &get_tone) == FAILURE) {
-		RETURN_NULL();
-	}
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &characters, &len, &get_tone) == FAILURE) {
+        RETURN_NULL();
+    }
     vector<string> py_result;
     if(get_tone) {
         result = PINYIN_G(pynotation)->convertToTonePY(characters, &py_result);
