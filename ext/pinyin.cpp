@@ -46,7 +46,8 @@ static zend_function_entry pinyin_methods[] = {
     PHP_ME(Pinyin, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
 	PHP_ME(Pinyin, loadDict, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Pinyin, convert, NULL, ZEND_ACC_PUBLIC)
-    PHP_ME(Pinyin, convert2Tone, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, multiConvert, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, exact, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -184,80 +185,60 @@ PHP_METHOD(Pinyin, loadDict)
 
     switch(dict_type) {
         case TONE_DICT:
-        {
-            if(!PINYIN_G(pynotation)->loadDict(path)) {
-                RETURN_FALSE;
-            }
-        }
-        break;
+            if(!PINYIN_G(pynotation)->loadDict(path)) RETURN_FALSE;
+            break;
         case TONE_DYZ_DICT:
-        {
-            if(!PINYIN_G(pynotation)->loadDyzDict(path)) {
-                RETURN_FALSE;
-            }
-        }
-        break;
+            if(!PINYIN_G(pynotation)->loadDyzDict(path)) RETURN_FALSE;
+            break;
         case TONE_DUOYONG_DICT:
-        {
-            if(!PINYIN_G(pynotation)->loadDYDict(path)) {
-                RETURN_FALSE;
-            }
-        }
-        break;
+            if(!PINYIN_G(pynotation)->loadDYDict(path)) RETURN_FALSE;
+            break;
         case BME_DICT:
-        {
-            if(!PINYIN_G(pynotation)->loadBMEDict(path)) {
-                RETURN_FALSE;
-            }
-        }
-        break;
+            if(!PINYIN_G(pynotation)->loadBMEDict(path)) RETURN_FALSE;
+            break;
         default:
             RETURN_FALSE;
+            break;
     }
+    RETURN_TRUE;
 }
 
 PHP_METHOD(Pinyin, convert)
 {
 	char *characters = NULL;
 	int  len;
+    zend_bool get_tone = 0;
+    bool result = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &characters, &len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &characters, &len, &get_tone) == FAILURE) {
 		RETURN_NULL();
 	}
     vector<string> py_result;
-    if(PINYIN_G(pynotation)->convertToPY(characters, &py_result)) {
+    if(get_tone) {
+        result = PINYIN_G(pynotation)->convertToTonePY(characters, &py_result);
+    } else {
+        result = PINYIN_G(pynotation)->convertToPY(characters, &py_result); 
+    }
+    if(result) {
         array_init(return_value);
         vector<string>::iterator _it = py_result.begin();
-        int i=0;
-        for(vector<string>::iterator _sit=py_result.begin(); _sit!=py_result.end(); _sit++) {
-            add_index_string(return_value, i, (*_sit).c_str(), 1);
-            i++;
+        int i = 0;
+        for(vector<string>::iterator _sit = py_result.begin(); _sit != py_result.end(); _sit++) {
+            add_index_string(return_value, i++, (*_sit).c_str(), 1);
         }
     } else {
         RETURN_FALSE;
     }
 }
 
-PHP_METHOD(Pinyin, convert2Tone)
+PHP_METHOD(Pinyin, multiConvert)
 {
-	char *characters = NULL;
-	int  len;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &characters, &len) == FAILURE) {
-		RETURN_NULL();
-	}
-    vector<string> py_result;
-    if(PINYIN_G(pynotation)->convertToTonePY(characters, &py_result)) {
-        array_init(return_value);
-        vector<string>::iterator _it = py_result.begin();
-        int i=0;
-        for(vector<string>::iterator _sit=py_result.begin(); _sit!=py_result.end(); _sit++) {
-            add_index_string(return_value, i, (*_sit).c_str(), 1);
-            i++;
-        }
-    } else {
-        RETURN_FALSE;
-    }    
+}
+
+PHP_METHOD(Pinyin, exact)
+{
+
 }
 
 /*
