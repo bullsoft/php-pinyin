@@ -107,12 +107,17 @@ PHP_MINIT_FUNCTION(pinyin)
 	REGISTER_INI_ENTRIES();
 	*/
     zend_class_entry ce;
+
     INIT_CLASS_ENTRY(ce, "Pinyin", pinyin_methods);
     pinyin_ce = zend_register_internal_class(&ce TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "TONE_DICT", strlen("TONE_DICT"), TONE_DICT);
-    zend_declare_class_constant_long(pinyin_ce, "TONE_DYZ_DICT", strlen("TONE_DYZ_DICT"), TONE_DYZ_DICT);
-    zend_declare_class_constant_long(pinyin_ce, "TONE_DUOYONG_DICT", strlen("TONE_DUOYONG_DICT"), TONE_DUOYONG_DICT);
+    zend_declare_class_constant_long(pinyin_ce, "TY_DICT", strlen("TY_DICT"), TY_DICT);
+    zend_declare_class_constant_long(pinyin_ce, "TY_TONE_DICT", strlen("TY_TONE_DICT"), TY_TONE_DICT);    
+
+    zend_declare_class_constant_long(pinyin_ce, "DYZ_DICT", strlen("DYZ_DICT"), DYZ_DICT);
+    zend_declare_class_constant_long(pinyin_ce, "DYZ_TONE_DICT", strlen("DYZ_TONE_DICT"), DYZ_TONE_DICT);
+
+    zend_declare_class_constant_long(pinyin_ce, "DY_DICT", strlen("DY_DICT"), DY_DICT);
     zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT);
     
     return SUCCESS;
@@ -184,13 +189,19 @@ PHP_METHOD(Pinyin, loadDict)
     }
 
     switch(dict_type) {
-        case TONE_DICT:
+        case TY_DICT:
             if(!PINYIN_G(pynotation)->loadDict(path)) RETURN_FALSE;
             break;
-        case TONE_DYZ_DICT:
+        case TY_TONE_DICT:
+            if(!PINYIN_G(pynotation)->loadToneDict(path)) RETURN_FALSE;
+            break;            
+        case DYZ_DICT:
             if(!PINYIN_G(pynotation)->loadDyzDict(path)) RETURN_FALSE;
             break;
-        case TONE_DUOYONG_DICT:
+        case DYZ_TONE_DICT:
+            if(!PINYIN_G(pynotation)->loadToneDyzDict(path)) RETURN_FALSE;
+            break;            
+        case DY_DICT:
             if(!PINYIN_G(pynotation)->loadDYDict(path)) RETURN_FALSE;
             break;
         case BME_DICT:
