@@ -12,7 +12,8 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:                                                              |
+  | Author: Gu Weigang     <guweigang@baidu.com>                         |
+  |         Shang Yuanchun <shangyuanchun@baidu.com>                     |
   +----------------------------------------------------------------------+
 */
 
@@ -32,9 +33,14 @@ extern "C" {
 
 ZEND_DECLARE_MODULE_GLOBALS(pinyin)
 
+static int le_pinyin_notation_link;
+#define PINYIN_NOTATION_LINK_DESC "Pinyin Notation"
+
 zend_class_entry *pinyin_ce;
 enum Dict_Type;
 
+
+static IPYNotation *get_pinyin_notation(zval *cls);
 
 /* {{{ pinyin_methods[]
  *
@@ -119,7 +125,13 @@ PHP_MINIT_FUNCTION(pinyin)
 
     zend_declare_class_constant_long(pinyin_ce, "DY_DICT", strlen("DY_DICT"), DY_DICT);
     zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT);
-    
+
+    zend_declare_property_null(pinyin_ce, ZEND_STRL("_pynotation"), ZEND_ACC_PRIVATE TSRMLS_CC);
+
+    // No destructor handler here, we will destroy IPYNotation in class's destructor
+    le_pinyin_notation_link = zend_register_list_destructors_ex(
+            NULL, NULL, PINYIN_NOTATION_LINK_DESC, module_number);
+
     return SUCCESS;
 }
 /* }}} */
@@ -169,17 +181,25 @@ PHP_MINFO_FUNCTION(pinyin)
 
 PHP_METHOD(Pinyin, __construct)
 {
-    PINYIN_G(pynotation) = IPYFactory::getPYInstance();
+    IPYNotation *pynotation = IPYFactory::getPYInstance();
+    zval        *self       = getThis();
+    zval        *z_pinyin;
+    MAKE_STD_ZVAL(z_pinyin);
+
+    ZEND_REGISTER_RESOURCE(z_pinyin, pynotation, le_pinyin_notation_link);
+    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL("_pynotation"), z_pinyin TSRMLS_CC);
 }
 
 PHP_METHOD(Pinyin, __destruct)
 {
-    delete PINYIN_G(pynotation);
-    PINYIN_G(pynotation) = NULL;
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    if (pynotation)
+        delete pynotation;
 }
 
 PHP_METHOD(Pinyin, loadDict)
 {
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *path = NULL;
     int len;
     enum Dict_Type dict_type;
@@ -190,22 +210,22 @@ PHP_METHOD(Pinyin, loadDict)
 
     switch(dict_type) {
         case TY_DICT:
-            if(!PINYIN_G(pynotation)->loadDict(path)) RETURN_FALSE;
+            if(!pynotation->loadDict(path)) RETURN_FALSE;
             break;
         case TY_TONE_DICT:
-            if(!PINYIN_G(pynotation)->loadToneDict(path)) RETURN_FALSE;
+            if(!pynotation->loadToneDict(path)) RETURN_FALSE;
             break;            
         case DYZ_DICT:
-            if(!PINYIN_G(pynotation)->loadDyzDict(path)) RETURN_FALSE;
+            if(!pynotation->loadDyzDict(path)) RETURN_FALSE;
             break;
         case DYZ_TONE_DICT:
-            if(!PINYIN_G(pynotation)->loadToneDyzDict(path)) RETURN_FALSE;
+            if(!pynotation->loadToneDyzDict(path)) RETURN_FALSE;
             break;            
         case DY_DICT:
-            if(!PINYIN_G(pynotation)->loadDYDict(path)) RETURN_FALSE;
+            if(!pynotation->loadDYDict(path)) RETURN_FALSE;
             break;
         case BME_DICT:
-            if(!PINYIN_G(pynotation)->loadBMEDict(path)) RETURN_FALSE;
+            if(!pynotation->loadBMEDict(path)) RETURN_FALSE;
             break;
         default:
             RETURN_FALSE;
@@ -216,7 +236,8 @@ PHP_METHOD(Pinyin, loadDict)
 
 PHP_METHOD(Pinyin, convert)
 {
-    char *characters = NULL;
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    char *characters   = NULL;
     int  len;
     zend_bool get_tone = 0;
     bool result = 0;
@@ -224,11 +245,12 @@ PHP_METHOD(Pinyin, convert)
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &characters, &len, &get_tone) == FAILURE) {
         RETURN_NULL();
     }
+
     vector<string> py_result;
     if(get_tone) {
-        result = PINYIN_G(pynotation)->convertToTonePY(characters, &py_result);
+        result = pynotation->convertToTonePY(characters, &py_result);
     } else {
-        result = PINYIN_G(pynotation)->convertToPY(characters, &py_result); 
+        result = pynotation->convertToPY(characters, &py_result); 
     }
     if(result) {
         array_init(return_value);
@@ -252,11 +274,29 @@ PHP_METHOD(Pinyin, exact)
 
 }
 
+static IPYNotation *get_pinyin_notation(zval *cls)
+{
+    zval        *pylink;
+    IPYNotation *pynotation;
+
+    pylink     = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL("_pynotation"), 0 TSRMLS_CC);
+    pynotation = (IPYNotation *)zend_fetch_resource(&pylink TSRMLS_CC, -1,
+                     PINYIN_NOTATION_LINK_DESC, NULL, 1, le_pinyin_notation_link);
+
+    if (!pynotation) {
+        php_error_docref(NULL TSRMLS_CC,
+                         E_WARNING,
+                         "Wrong resource handler for IPYNotation.");
+    }
+
+    return pynotation;
+}
+
 /*
  * Local variables:
  * tab-width: 4
  * c-basic-offset: 4
  * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
+ * vim600: sw=4 ts=4
+ * vim<600: sw=4 ts=4
  */

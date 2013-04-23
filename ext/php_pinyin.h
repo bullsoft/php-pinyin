@@ -77,7 +77,7 @@ PHP_METHOD(Pinyin, exact);
 /* PHP_METHOD(Pinyin, nameCorrect); */
 
 ZEND_BEGIN_MODULE_GLOBALS(pinyin)
-    IPYNotation *pynotation;
+//    IPYNotation *pynotation;
 ZEND_END_MODULE_GLOBALS(pinyin)
 
 /* In every utility function you add that needs to use variables 
