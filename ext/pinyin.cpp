@@ -53,7 +53,7 @@ static zend_function_entry pinyin_methods[] = {
     PHP_ME(Pinyin, loadDict, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, convert, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, multiConvert, NULL, ZEND_ACC_PUBLIC)
-    PHP_ME(Pinyin, exact, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, exactConvert, NULL, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 /* }}} */
@@ -266,12 +266,71 @@ PHP_METHOD(Pinyin, convert)
 
 PHP_METHOD(Pinyin, multiConvert)
 {
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    zval        *strs, **str;
+    HashTable   *strshash;
+    HashPosition pointer;
+    bool         result     = 0;
 
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &strs) == FAILURE) {
+        RETURN_NULL();
+    }
+    vector<string> convert_strs;
+    string strtmp;
+    strshash = Z_ARRVAL_P(strs);
+    for (zend_hash_internal_pointer_reset_ex(strshash, &pointer);
+             zend_hash_get_current_data_ex(strshash, (void **)&str, &pointer) == SUCCESS;
+             zend_hash_move_forward_ex(strshash, &pointer)) {
+        convert_to_string_ex(str);
+        strtmp.assign(Z_STRVAL_PP(str), Z_STRLEN_PP(str));
+        convert_strs.push_back(strtmp);
+    }
+
+    vector<vector<string> * > py_result;
+    result = pynotation->convertToPY(convert_strs, &py_result); 
+    if(result) {
+        array_init(return_value);
+        int i = 0;
+        vector<vector<string> * >::iterator it = py_result.begin();
+        for(; it != py_result.end(); it++) {
+            for (vector<string>::iterator iit = (*it)->begin();
+                     iit != (*it)->end();
+                     iit++) {
+                add_index_string(return_value, i++, (*iit).c_str(), 1);
+            }
+        }
+    } else {
+        RETURN_FALSE;
+    }
 }
 
-PHP_METHOD(Pinyin, exact)
+PHP_METHOD(Pinyin, exactConvert)
 {
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    char        *str        = NULL;
+    int          len;
+    zend_bool    get_tone   = 0;
+    bool         result     = 0;
 
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &str, &len, &get_tone) == FAILURE) {
+        RETURN_NULL();
+    }
+
+    vector<string> py_result;
+    if(get_tone) {
+        result = pynotation->exactToTonePY(str, &py_result);
+    } else {
+        result = pynotation->exactToPY(str, &py_result); 
+    }
+    if(result) {
+        array_init(return_value);
+        int i = 0;
+        for(vector<string>::iterator it = py_result.begin(); it != py_result.end(); it++) {
+            add_index_string(return_value, i++, (*it).c_str(), 1);
+        }
+    } else {
+        RETURN_FALSE;
+    }
 }
 
 static IPYNotation *get_pinyin_notation(zval *cls)
