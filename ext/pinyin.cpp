@@ -271,10 +271,12 @@ PHP_METHOD(Pinyin, multiConvert)
     HashTable   *strshash;
     HashPosition pointer;
     bool         result     = 0;
+    int          strs_num;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &strs) == FAILURE) {
-        RETURN_NULL();
+        RETURN_FALSE;
     }
+
     vector<string> convert_strs;
     string strtmp;
     strshash = Z_ARRVAL_P(strs);
@@ -286,13 +288,21 @@ PHP_METHOD(Pinyin, multiConvert)
         convert_strs.push_back(strtmp);
     }
 
-    vector<vector<string> * > py_result;
-    result = pynotation->convertToPY(convert_strs, &py_result); 
+    strs_num = zend_hash_num_elements(strshash);
+    vector<vector<string> * > py_results;
+    py_results.reserve(strs_num);
+    // py_result to store one sentence's pinyin result
+    // its memory will be released when this method ends
+    vector<string> py_result[strs_num];
+    for(int i = 0; i < strs_num; i++) {
+        py_results.push_back(&py_result[i]);
+    }
+    result = pynotation->convertToPY(convert_strs, &py_results); 
     if(result) {
         array_init(return_value);
         int i = 0;
-        vector<vector<string> * >::iterator it = py_result.begin();
-        for(; it != py_result.end(); it++) {
+        vector<vector<string> * >::iterator it = py_results.begin();
+        for(; it != py_results.end(); it++) {
             for (vector<string>::iterator iit = (*it)->begin();
                      iit != (*it)->end();
                      iit++) {
@@ -313,7 +323,7 @@ PHP_METHOD(Pinyin, exactConvert)
     bool         result     = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &str, &len, &get_tone) == FAILURE) {
-        RETURN_NULL();
+        RETURN_FALSE;
     }
 
     vector<string> py_result;
