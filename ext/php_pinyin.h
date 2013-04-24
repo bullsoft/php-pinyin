@@ -70,7 +70,7 @@ PHP_METHOD(Pinyin, __destruct);
 PHP_METHOD(Pinyin, loadDict);
 PHP_METHOD(Pinyin, convert);
 PHP_METHOD(Pinyin, multiConvert);
-PHP_METHOD(Pinyin, exact);
+PHP_METHOD(Pinyin, exactConvert);
 
 /* PHP_METHOD(Pinyin, exact2Tone); */
 /* PHP_METHOD(Pinyin, generateDict); */
