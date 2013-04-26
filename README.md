@@ -68,6 +68,13 @@ If you want to get the Abbr. of the whole pinyin-string, you can simply do this:
 echo preg_replace("/\'([a-zA-Z])[0-9a-zA-Z]*/e", "strtoupper('$1')", "'".$py_string);
 ```
 
+If you want to customize dict-files yourself and then convert them to binary-format again, do it like this:
+```php
+$reult = $obj->generateDict("/home/work/local/pinyin/dict/dict.txt", "/home/work/tmp/dict.dat");
+
+if($result) echo "Generate complete";
+```
+
 Feedback
 ---------
 
