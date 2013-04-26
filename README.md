@@ -40,7 +40,7 @@ var_dump($obj->exactConvert(iconv("UTF-8", "GBK", "中华人民共和国")));
 
 ```
 
-Resulte will be:
+Results will be:
 ```php
 array(1) {
   [0] =>
