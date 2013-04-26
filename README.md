@@ -3,7 +3,12 @@ php-pinyin
 
 A PHP extension converting Chinese character to Pinyin. 
 
-一个来自百度内部的汉字转拼音库。
+一个来自百度的汉字转拼音PHP扩库，其他的汉字转拼音方案存在两个问题：
+
+1. 可转的汉字数有限，几千个左右
+2. 不能解决多音字问题
+
+很抱歉，由于授权问题，目前我们无法提供libpinyin库及其词典！
 
 Install
 -----------
