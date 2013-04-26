@@ -8,6 +8,6 @@
 // ARG_ENABLE("pinyin", "enable pinyin support", "no");
 
 if (PHP_PINYIN != "no") {
-	EXTENSION("pinyin", "pinyin.c");
+	EXTENSION("pinyin", "pinyin.cpp");
 }
 

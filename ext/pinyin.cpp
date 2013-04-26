@@ -271,7 +271,7 @@ PHP_METHOD(Pinyin, multiConvert)
     HashTable   *strshash;
     HashPosition pointer;
     bool         result     = 0;
-    int          strs_num;
+    int          strs_num   = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &strs) == FAILURE) {
         RETURN_FALSE;
@@ -286,12 +286,11 @@ PHP_METHOD(Pinyin, multiConvert)
         convert_to_string_ex(str);
         strtmp.assign(Z_STRVAL_PP(str), Z_STRLEN_PP(str));
         convert_strs.push_back(strtmp);
+        strs_num++;
     }
 
-    strs_num = zend_hash_num_elements(strshash);
     vector<vector<string> * > py_results;
     py_results.reserve(strs_num);
-
     // py_result to store one sentence's pinyin result
     // its memory will be released when this method ends
     vector<string> py_result[strs_num];

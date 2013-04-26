@@ -1,9 +1,14 @@
 php-pinyin
 ==========
 
-A PHP extension converting Chinese character to Pinyin. 
+A PHP extension converting Chinese characters to Pinyin. 
 
-一个来自百度内部的汉字转拼音库。
+一个来自百度的汉字转拼音PHP扩展，其他的汉字转拼音方案存在两个问题：
+
+1. 可转的汉字数有限，几千个左右
+2. 不能解决多音字问题
+
+很抱歉，由于授权问题，目前我们无法提供libpinyin库及其词典！
 
 Install
 -----------
@@ -35,7 +40,7 @@ var_dump($obj->exactConvert(iconv("UTF-8", "GBK", "中华人民共和国")));
 
 ```
 
-Resulte will be:
+Results will be:
 ```php
 array(1) {
   [0] =>
@@ -56,3 +61,16 @@ array(1) {
   string(29) "zhong'hua'ren'min'gong'he'guo"
 }
 ```
+
+If you want to get the Abbr. of the whole pinyin-string, you can simply do this:
+
+```php
+echo preg_replace("/\'([a-zA-Z])[0-9a-zA-Z]*/e", "strtoupper('$1')", "'".$py_string);
+```
+
+Feedback
+---------
+
+Issues and contributions are welcome.
+
+Thank you!
