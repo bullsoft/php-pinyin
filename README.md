@@ -61,3 +61,16 @@ array(1) {
   string(29) "zhong'hua'ren'min'gong'he'guo"
 }
 ```
+
+If you want to get the Abbr. of the whole pinyin-string, you can simply do this:
+
+```php
+echo preg_replace("/\'([a-zA-Z]).*/e", "strtoupper('$1')", "'".$py_string);
+```
+
+Feedback
+---------
+
+Issues and contributions are welcome.
+
+Thank you!
