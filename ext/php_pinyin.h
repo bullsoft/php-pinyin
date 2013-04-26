@@ -72,13 +72,12 @@ PHP_METHOD(Pinyin, convert);
 PHP_METHOD(Pinyin, multiConvert);
 PHP_METHOD(Pinyin, exactConvert);
 
-/* PHP_METHOD(Pinyin, exact2Tone); */
-/* PHP_METHOD(Pinyin, generateDict); */
+PHP_METHOD(Pinyin, generateDict);
 /* PHP_METHOD(Pinyin, nameCorrect); */
 
-ZEND_BEGIN_MODULE_GLOBALS(pinyin)
+// ZEND_BEGIN_MODULE_GLOBALS(pinyin)
 //    IPYNotation *pynotation;
-ZEND_END_MODULE_GLOBALS(pinyin)
+// ZEND_END_MODULE_GLOBALS(pinyin)
 
 /* In every utility function you add that needs to use variables 
    in php_pinyin_globals, call TSRMLS_FETCH(); after declaring other 

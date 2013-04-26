@@ -31,7 +31,7 @@ extern "C" {
 
 #include "php_pinyin.h"
 
-ZEND_DECLARE_MODULE_GLOBALS(pinyin)
+// ZEND_DECLARE_MODULE_GLOBALS(pinyin)
 
 static int le_pinyin_notation_link;
 #define PINYIN_NOTATION_LINK_DESC "Pinyin Notation"
@@ -54,6 +54,7 @@ static zend_function_entry pinyin_methods[] = {
     PHP_ME(Pinyin, convert, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, multiConvert, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Pinyin, exactConvert, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Pinyin, generateDict, NULL, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 /* }}} */
@@ -193,8 +194,7 @@ PHP_METHOD(Pinyin, __construct)
 PHP_METHOD(Pinyin, __destruct)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
-    if (pynotation)
-        delete pynotation;
+    if (pynotation) delete pynotation;
 }
 
 PHP_METHOD(Pinyin, loadDict)
@@ -339,6 +339,22 @@ PHP_METHOD(Pinyin, exactConvert)
         for(vector<string>::iterator it = py_result.begin(); it != py_result.end(); it++) {
             add_index_string(return_value, i++, (*it).c_str(), 1);
         }
+    } else {
+        RETURN_FALSE;
+    }
+}
+
+PHP_METHOD(Pinyin, generateDict)
+{
+    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    char *from_str, *to_str;
+    int  from_len, to_len;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &from_str, &from_len, &to_str, &to_len) == FAILURE) {
+        RETURN_FALSE;
+    }
+    
+    if(pynotation->generateDict(from_str, to_str)) {
+        RETURN_TRUE;
     } else {
         RETURN_FALSE;
     }
