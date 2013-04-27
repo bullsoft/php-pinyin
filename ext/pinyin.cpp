@@ -291,6 +291,7 @@ PHP_METHOD(Pinyin, multiConvert)
 
     vector<vector<string> * > py_results;
     py_results.reserve(strs_num);
+
     // py_result to store one sentence's pinyin result
     // its memory will be released when this method ends
     vector<string> py_result[strs_num];
