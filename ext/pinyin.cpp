@@ -118,14 +118,14 @@ PHP_MINIT_FUNCTION(pinyin)
     INIT_CLASS_ENTRY(ce, "Pinyin", pinyin_methods);
     pinyin_ce = zend_register_internal_class(&ce TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "TY_DICT", strlen("TY_DICT"), TY_DICT);
-    zend_declare_class_constant_long(pinyin_ce, "TY_TONE_DICT", strlen("TY_TONE_DICT"), TY_TONE_DICT);    
+    zend_declare_class_constant_long(pinyin_ce, "TY_DICT", strlen("TY_DICT"), TY_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, "TY_TONE_DICT", strlen("TY_TONE_DICT"), TY_TONE_DICT TSRMLS_CC);    
 
-    zend_declare_class_constant_long(pinyin_ce, "DYZ_DICT", strlen("DYZ_DICT"), DYZ_DICT);
-    zend_declare_class_constant_long(pinyin_ce, "DYZ_TONE_DICT", strlen("DYZ_TONE_DICT"), DYZ_TONE_DICT);
+    zend_declare_class_constant_long(pinyin_ce, "DYZ_DICT", strlen("DYZ_DICT"), DYZ_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, "DYZ_TONE_DICT", strlen("DYZ_TONE_DICT"), DYZ_TONE_DICT TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "DY_DICT", strlen("DY_DICT"), DY_DICT);
-    zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT);
+    zend_declare_class_constant_long(pinyin_ce, "DY_DICT", strlen("DY_DICT"), DY_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT TSRMLS_CC);
 
     zend_declare_property_null(pinyin_ce, ZEND_STRL("_pynotation"), ZEND_ACC_PRIVATE TSRMLS_CC);
 
@@ -363,7 +363,7 @@ static IPYNotation *get_pinyin_notation(zval *cls)
 {
     zval        *pylink;
     IPYNotation *pynotation;
-
+    TSRMLS_FETCH();
     pylink     = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL("_pynotation"), 0 TSRMLS_CC);
     pynotation = (IPYNotation *)zend_fetch_resource(&pylink TSRMLS_CC, -1,
                      PINYIN_NOTATION_LINK_DESC, NULL, 1, le_pinyin_notation_link);
