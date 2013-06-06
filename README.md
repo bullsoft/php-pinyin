@@ -70,7 +70,7 @@ echo preg_replace("/\'([a-zA-Z])[0-9a-zA-Z]*/e", "strtoupper('$1')", "'".$py_str
 
 If you want to customize dict-files yourself and then convert them to binary-format again, do it like this:
 ```php
-$reult = $obj->generateDict("/home/work/local/pinyin/dict/dict.txt", "/home/work/tmp/dict.dat");
+$result = $obj->generateDict("/home/work/local/pinyin/dict/dict.txt", "/home/work/tmp/dict.dat");
 
 if($result) echo "Generate complete";
 ```

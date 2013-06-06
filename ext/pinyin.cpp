@@ -205,7 +205,7 @@ PHP_METHOD(Pinyin, loadDict)
     enum Dict_Type dict_type;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &path, &len, &dict_type) == FAILURE) {
-        return;
+        RETURN_FALSE;
     }
 
     switch(dict_type) {
@@ -243,7 +243,7 @@ PHP_METHOD(Pinyin, convert)
     bool result = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|b", &characters, &len, &get_tone) == FAILURE) {
-        RETURN_NULL();
+        RETURN_FALSE;
     }
 
     vector<string> py_result;
@@ -291,6 +291,7 @@ PHP_METHOD(Pinyin, multiConvert)
 
     vector<vector<string> * > py_results;
     py_results.reserve(strs_num);
+
     // py_result to store one sentence's pinyin result
     // its memory will be released when this method ends
     vector<string> py_result[strs_num];
