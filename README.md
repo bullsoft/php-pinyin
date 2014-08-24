@@ -8,8 +8,6 @@ A PHP extension converting Chinese characters to Pinyin.
 1. 可转的汉字数有限，几千个左右
 2. 不能解决多音字问题
 
-很抱歉，由于授权问题，目前我们无法提供libpinyin库及其词典！
-
 Install
 -----------
 1. $ cd /path/to/php-pinyin

@@ -293,8 +293,13 @@ PHP_METHOD(Pinyin, multiConvert)
     py_results.reserve(strs_num);
 
     // py_result to store one sentence's pinyin result
-    // its memory will be released when this method ends
-    vector<string> py_result[strs_num];
+#if defined(__APPLE_CPP__) || defined(__APPLE_CC__)
+# define PY_NEED_DELETE_RESULT
+    vector<string> *py_result = new vector<string>[strs_num];
+#else
+    vector<string>  py_result[strs_num];
+#endif
+
     for(int i = 0; i < strs_num; i++) {
         py_results.push_back(&py_result[i]);
     }
@@ -310,7 +315,13 @@ PHP_METHOD(Pinyin, multiConvert)
                 add_index_string(return_value, i++, (*iit).c_str(), 1);
             }
         }
+#ifdef PY_NEED_DELETE_RESULT
+        delete [] py_result;
+#endif
     } else {
+#ifdef PY_NEED_DELETE_RESULT
+        delete [] py_result;
+#endif
         RETURN_FALSE;
     }
 }
