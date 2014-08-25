@@ -293,7 +293,7 @@ PHP_METHOD(Pinyin, multiConvert)
     py_results.reserve(strs_num);
 
     // py_result to store one sentence's pinyin result
-#if defined(__APPLE_CPP__) || defined(__APPLE_CC__)
+#ifdef DARWIN
 # define PY_NEED_DELETE_RESULT
     vector<string> *py_result = new vector<string>[strs_num];
 #else
