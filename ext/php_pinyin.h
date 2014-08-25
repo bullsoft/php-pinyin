@@ -50,12 +50,12 @@ using namespace NLP::Pinyin;
 
 
 enum Dict_Type {
-    TY_DICT       = 1,
-    TY_TONE_DICT  = 2,
-    DYZ_DICT      = 3, 
-    DYZ_TONE_DICT = 4,
-    DY_DICT       = 5,
-    BME_DICT      = 6
+    TY_DICT  = 1,
+    TY_TONE_DICT,
+    DYZ_DICT,
+    DYZ_TONE_DICT,
+    DY_DICT,
+    BME_DICT,
 };
 
 PHP_MINIT_FUNCTION(pinyin);
