@@ -202,7 +202,7 @@ PHP_METHOD(Pinyin, loadDict)
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *path = NULL;
     long  len;
-    enum  Dict_Type dict_type;
+    long  dict_type; // actually its value is of type enum Dict_Type
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &path, &len, &dict_type) == FAILURE) {
         RETURN_FALSE;
