@@ -201,8 +201,8 @@ PHP_METHOD(Pinyin, loadDict)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *path = NULL;
-    int len;
-    enum Dict_Type dict_type;
+    long  len;
+    enum  Dict_Type dict_type;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &path, &len, &dict_type) == FAILURE) {
         RETURN_FALSE;
@@ -238,7 +238,7 @@ PHP_METHOD(Pinyin, convert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *characters   = NULL;
-    int  len;
+    long  len;
     zend_bool get_tone = 0;
     bool result = 0;
 
@@ -330,7 +330,7 @@ PHP_METHOD(Pinyin, exactConvert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char        *str        = NULL;
-    int          len;
+    long         len;
     zend_bool    get_tone   = 0;
     bool         result     = 0;
 
@@ -359,7 +359,7 @@ PHP_METHOD(Pinyin, generateDict)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *from_str, *to_str;
-    int  from_len, to_len;
+    long  from_len, to_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &from_str, &from_len, &to_str, &to_len) == FAILURE) {
         RETURN_FALSE;
     }
