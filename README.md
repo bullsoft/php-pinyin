@@ -3,7 +3,7 @@ php-pinyin
 
 A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch. Main improvements:
   - This time we support `UTF-8` and `GBK` encoding
-  - Add ini_setting (pinyin.dict_path and pinyin.dict_tone), you shoud not loadDict yourself.
+  - Add ini_setting (`pinyin.dict_path` and `pinyin.dict_tone`), you shoud not loadDict yourself.
 
 一个来自百度的汉字转拼音PHP扩展，其他的汉字转拼音方案存在两个问题：
 
