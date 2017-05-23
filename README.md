@@ -10,7 +10,7 @@ A PHP extension converting Chinese characters to Pinyin.
 
 Install
 -----------
-1. Install [PHP-CPP](https://github.com/CopernicaMarketingSoftware/PHP-CPP) or its [LEGACY Version](https://github.com/CopernicaMarketingSoftware/PHP-CPP-LEGACY), before that, you need to change the Makefile,,, because PHP-CPP was written with C++11, but libpinyin was written with C++98,,, So you should build PHP-CPP with `-D_GLIBCXX_USE_CXX11_ABI=0` option
+1. Install [PHP-CPP](https://github.com/CopernicaMarketingSoftware/PHP-CPP) or its [LEGACY Version](https://github.com/CopernicaMarketingSoftware/PHP-CPP-LEGACY). Before that, you need to change the Makefile,,, because PHP-CPP was written with C++11, but libpinyin was written with C++98,,, So you should build PHP-CPP with `-D_GLIBCXX_USE_CXX11_ABI=0` option, which means "Do not use Cxx11's Application Binary Interface"
 2. $ cd /path/to/php-pinyin/cpp-ext
 3. $ make
 4. $ make install
