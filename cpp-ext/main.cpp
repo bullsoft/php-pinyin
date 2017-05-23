@@ -29,13 +29,17 @@ extern "C" {
           });
 
         master.method<&Master::convert>("convert", {
-            Php::ByVal("words", Php::Type::String),
-            Php::ByVal("tone", Php::Type::Bool, false),
+            Php::ByVal("word", Php::Type::String)
+          });
+
+        master.method<&Master::multiConvert>("multiConvert", {
+            Php::ByVal("words", Php::Type::Array)
           });
 
         master.method<&Master::generateDict>("generateDict", {
             Php::ByVal("string", Php::Type::String)
           });
+
         std::string home = string(std::getenv("HOME"));
         extension.add(Php::Ini("pinyin.dict_path", (home+"/var/data/libpinyin/dict").c_str()));
         extension.add(Php::Ini("pinyin.dict_tone", 0));
