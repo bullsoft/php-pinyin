@@ -1,5 +1,6 @@
 #include <phpcpp.h>
 #include "master.h"
+#include <cstdlib>
 
 /**
  *  tell the compiler that the get_module is a pure C function
@@ -35,8 +36,8 @@ extern "C" {
         master.method<&Master::generateDict>("generateDict", {
             Php::ByVal("string", Php::Type::String)
           });
-
-        extension.add(Php::Ini("pinyin.dict_path", "~/var/data/libpinyin/dict/"));
+        std::string home = string(std::getenv("HOME"));
+        extension.add(Php::Ini("pinyin.dict_path", (home+"/var/data/libpinyin/dict").c_str()));
         extension.add(Php::Ini("pinyin.dict_tone", 0));
 
         // add all classes to the extension
