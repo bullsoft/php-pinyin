@@ -1,7 +1,7 @@
 php-pinyin
 ==========
 
-A PHP extension converting Chinese characters to Pinyin. 
+A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch.
 
 一个来自百度的汉字转拼音PHP扩展，其他的汉字转拼音方案存在两个问题：
 
