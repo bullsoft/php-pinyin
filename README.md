@@ -1,7 +1,9 @@
 php-pinyin
 ==========
 
-A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch.
+A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch. Main improvements:
+  - This time we support `UTF-8` and `GBK` encoding
+  - add ini_setting (pinyin.dict_path and pinyin.dict_tone), you shoud not loadDict yourself.
 
 一个来自百度的汉字转拼音PHP扩展，其他的汉字转拼音方案存在两个问题：
 
@@ -20,7 +22,7 @@ Usage
 ---------
 ```php
 $obj  = new Pinyin();
-var_dump($obj->convert(iconv("UTF-8", "GBK", "重庆重量")));
+var_dump($obj->convert("重庆重量"));
 var_dump($obj->multiConvert(array(iconv("UTF-8", "GBK", "重庆南京市长江大桥财务会议会计"))));
 var_dump($obj->multiConvert(array(iconv("UTF-8", "GBK", "重庆"), iconv("UTF-8", "GBK", "重量"))));
 var_dump($obj->exactConvert(iconv("UTF-8", "GBK", "中华人民共和国")));
@@ -28,10 +30,7 @@ var_dump($obj->exactConvert(iconv("UTF-8", "GBK", "中华人民共和国")));
 
 Results will be:
 ```php
-array(1) {
-  [0] =>
-  string(22) "chong'qing'zhong'liang"
-}
+string(22) "chong'qing'zhong'liang"
 array(1) {
   [0] =>
   string(65) "chong'qing'nan'jing'shi'chang'jiang'da'qiao'cai'wu'hui'yi'kuai'ji"
