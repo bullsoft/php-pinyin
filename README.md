@@ -60,6 +60,22 @@ If you want to get the Abbr. of the whole pinyin-string, you can simply do this:
 echo preg_replace("/\'([a-zA-Z])[0-9a-zA-Z]*/e", "strtoupper('$1')", "'".$py_string);
 ```
 
+This lib only support Chinese characters and english letters, or else it will return `false`. So you can write a `safeConvert` function to avoid this.
+
+```php
+$p = new Pinyin();
+function safeConvert($word) {
+    global $p;
+    // UTF-8 regex for Chinese
+    $result = preg_match_all("/([\x{4e00}-\x{9fa5}]+)/iu", $word, $matches);
+    if(!$result) {
+        throw new \Exception("No Chinese characters in word");
+    }
+    $pys = $p->multiConvert($matches[1]);
+    return str_replace($matches[1], $pys, $word);
+}
+```
+
 If you want to customize dict-files yourself and then convert them to binary-format again, do it like this:
 ```php
 $result = $obj->generateDict("/home/work/local/pinyin/dict/dict.txt", "/home/work/tmp/dict.dat");
