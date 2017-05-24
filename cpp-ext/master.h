@@ -150,9 +150,54 @@ private:
       return array;
     }
 
+    /**
+     * WARNING:::: PHP-CPP do not support reference-value
+     * So this method was not exported to PHP-Userland
+     */
+    Php::Value safeConvert(Php::Parameters &params) {
+      Php::Value array;
+      Php::Value word = params[0];
+      Php::Value utf8Word;
+      string encoding;
 
-    void generateDict(Php::Parameters &params) {
+      encoding = Php::call("mb_detect_encoding", word, "UTF-8, GBK, CP936").stringValue();
 
+      if("UTF-8" == encoding) {
+        utf8Word = word;
+      } else if("GBK" == encoding || "CP936" == encoding) {
+        utf8Word = Php::call("mb_convert_encoding", word, "UTF-8", "GBK");
+      } else {
+        throw Php::Exception("Character encoding must be utf-8 or gbk");
+      }
+
+      Php::Value matches;
+      bool result;
+      // PHP-CPP do not support reference-value
+      result = Php::call("preg_match_all", string("/([\\x{4e00}-\\x{9fa5}]+)/iu"), utf8Word, matches).boolValue();
+      if(result > 0) {
+        Php::Value m = matches[1];
+        for (auto &iter : m)
+          {
+            Php::Value py = _convert(iter.second);
+            if(py.isString() && py.size() > 0) {
+              array[iter.first] = py;
+            } else {
+              array[iter.first] = false;
+            }
+          }
+        return Php::call("str_replace", m, array, utf8Word);
+      }
+      return false;
+    }
+
+    Php::Value generateDict(Php::Parameters &params) {
+      const char * txt = params[0];
+      const char * dat = params[1];
+
+      if(_py->generateDict(txt, dat)) {
+        return true;
+      }
+      return false;
     }
 
     /**
@@ -161,7 +206,7 @@ private:
      */
     const char *__toString() const
     {
-        return "Chinese Pinyin extension for php.";
+        return "Chinese Pinyin extension for php. Made by BullSoft.org";
     }
 };
 

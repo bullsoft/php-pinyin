@@ -32,12 +32,19 @@ extern "C" {
             Php::ByVal("word", Php::Type::String)
           });
 
+        /*
+          master.method<&Master::safeConvert>("safeConvert", {
+            Php::ByVal("word", Php::Type::String)
+          });
+        */
+
         master.method<&Master::multiConvert>("multiConvert", {
             Php::ByVal("words", Php::Type::Array)
           });
 
         master.method<&Master::generateDict>("generateDict", {
-            Php::ByVal("string", Php::Type::String)
+            Php::ByVal("txtFilePath", Php::Type::String),
+            Php::ByVal("batFilePath", Php::Type::String)
           });
 
         std::string home = string(std::getenv("HOME"));

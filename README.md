@@ -1,7 +1,11 @@
 php-pinyin
 ==========
 
-A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch. Main improvements:
+A PHP extension converting Chinese characters to Pinyin. We refactor this by using PHP-CPP, older version please checkout `legacy` branch. 
+
+Main improvements:
+  - Depend PHP-CPP, an awesome library which wrapper Zend Engine with friendly api
+  - Support PHP 7
   - This time we support `UTF-8` and `GBK` encoding
   - Add ini_setting (`pinyin.dict_path` and `pinyin.dict_tone`), you shoud not loadDict yourself.
 
@@ -13,19 +17,22 @@ A PHP extension converting Chinese characters to Pinyin. We refactor this by usi
 Install
 -----------
 1. Install [PHP-CPP](https://github.com/CopernicaMarketingSoftware/PHP-CPP) or its [LEGACY Version](https://github.com/CopernicaMarketingSoftware/PHP-CPP-LEGACY). Before that, you need to change the Makefile,,, because PHP-CPP was written with C++11, but libpinyin was written with C++98,,, So you should build PHP-CPP with `-D_GLIBCXX_USE_CXX11_ABI=0` option, which means "Do not use Cxx11's Application Binary Interface"
-2. $ cd /path/to/php-pinyin/cpp-ext
-3. $ make
-4. $ make install
+2. cd /path/to/php-pinyin/cpp-ext
+3. make
+4. make install
 
 
 Usage
 ---------
 ```php
 $obj  = new Pinyin();
+
+// UTF-8
 var_dump($obj->convert("重庆重量"));
-var_dump($obj->multiConvert(array(iconv("UTF-8", "GBK", "重庆南京市长江大桥财务会议会计"))));
+var_dump($obj->multiConvert(array("重庆南京市长江大桥财务会议会计")));
+
+// GBK
 var_dump($obj->multiConvert(array(iconv("UTF-8", "GBK", "重庆"), iconv("UTF-8", "GBK", "重量"))));
-var_dump($obj->exactConvert(iconv("UTF-8", "GBK", "中华人民共和国")));
 ```
 
 Results will be:
