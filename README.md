@@ -64,15 +64,20 @@ This lib only support Chinese characters and english letters, or else it will re
 
 ```php
 $p = new Pinyin();
-function safeConvert($word) {
+function safeConvert($word, $pyOnly = true) {
     global $p;
     // UTF-8 regex for Chinese
     $result = preg_match_all("/([\x{4e00}-\x{9fa5}]+)/iu", $word, $matches);
     if(!$result) {
         throw new \Exception("No Chinese characters in word");
     }
+
     $pys = $p->multiConvert($matches[1]);
-    return str_replace($matches[1], $pys, $word);
+    if($pyOnly == true) {
+        return implode("'", $pys);
+    } else {
+        return str_replace($matches[1], $pys, $word);
+    }
 }
 ```
 
