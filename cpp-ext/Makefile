@@ -85,9 +85,9 @@ LINKER				=	g++
 #	with a list of all flags that should be passed to the linker.
 #
 
-COMPILER_FLAGS		=	-Wall -D_GLIBCXX_USE_CXX11_ABI=0 -g -c -O2 -std=c++11 -I../libpinyin/include -fpic -o
-LINKER_FLAGS		=	-shared -L/home/work/var/data/libpinyin/lib
-LINKER_DEPENDENCIES	=	-lphpcpp -lPYNotation -L../libpinyin/lib -Wl,-rpath=../libpinyin/lib
+COMPILER_FLAGS		=	-Wall -D_GLIBCXX_USE_CXX11_ABI=0 -g -c -O2 -std=c++11 -I$(shell pwd)/../libpinyin/include -fpic -o
+LINKER_FLAGS		=	-shared 
+LINKER_DEPENDENCIES	=	-lphpcpp -lPYNotation -L$(shell pwd)/../libpinyin/lib -Wl,-rpath=$(shell pwd)/../libpinyin/lib
 
 
 #
