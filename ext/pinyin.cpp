@@ -110,7 +110,7 @@ static void php_pinyin_init_globals(zend_pinyin_globals *pinyin_globals)
  */
 PHP_MINIT_FUNCTION(pinyin)
 {
-	/* If you have INI entries, uncomment these lines 
+	/* If you have INI entries, uncomment these lines
 	REGISTER_INI_ENTRIES();
 	*/
     zend_class_entry ce;
@@ -118,14 +118,14 @@ PHP_MINIT_FUNCTION(pinyin)
     INIT_CLASS_ENTRY(ce, "Pinyin", pinyin_methods);
     pinyin_ce = zend_register_internal_class(&ce TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "TY_DICT", strlen("TY_DICT"), TY_DICT TSRMLS_CC);
-    zend_declare_class_constant_long(pinyin_ce, "TY_TONE_DICT", strlen("TY_TONE_DICT"), TY_TONE_DICT TSRMLS_CC);    
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("TY_DICT"), TY_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("TY_TONE_DICT"), TY_TONE_DICT TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "DYZ_DICT", strlen("DYZ_DICT"), DYZ_DICT TSRMLS_CC);
-    zend_declare_class_constant_long(pinyin_ce, "DYZ_TONE_DICT", strlen("DYZ_TONE_DICT"), DYZ_TONE_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("DYZ_DICT"), DYZ_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("DYZ_TONE_DICT"), DYZ_TONE_DICT TSRMLS_CC);
 
-    zend_declare_class_constant_long(pinyin_ce, "DY_DICT", strlen("DY_DICT"), DY_DICT TSRMLS_CC);
-    zend_declare_class_constant_long(pinyin_ce, "BME_DICT", strlen("BME_DICT"), BME_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("DY_DICT"), DY_DICT TSRMLS_CC);
+    zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("BME_DICT"), BME_DICT TSRMLS_CC);
 
     zend_declare_property_null(pinyin_ce, ZEND_STRL("_pynotation"), ZEND_ACC_PRIVATE TSRMLS_CC);
 
@@ -214,13 +214,13 @@ PHP_METHOD(Pinyin, loadDict)
             break;
         case TY_TONE_DICT:
             if(!pynotation->loadToneDict(path)) RETURN_FALSE;
-            break;            
+            break;
         case DYZ_DICT:
             if(!pynotation->loadDyzDict(path)) RETURN_FALSE;
             break;
         case DYZ_TONE_DICT:
             if(!pynotation->loadToneDyzDict(path)) RETURN_FALSE;
-            break;            
+            break;
         case DY_DICT:
             if(!pynotation->loadDYDict(path)) RETURN_FALSE;
             break;
@@ -250,7 +250,7 @@ PHP_METHOD(Pinyin, convert)
     if(get_tone) {
         result = pynotation->convertToTonePY(characters, &py_result);
     } else {
-        result = pynotation->convertToPY(characters, &py_result); 
+        result = pynotation->convertToPY(characters, &py_result);
     }
     if(result) {
         array_init(return_value);
@@ -303,7 +303,7 @@ PHP_METHOD(Pinyin, multiConvert)
     for(int i = 0; i < strs_num; i++) {
         py_results.push_back(&py_result[i]);
     }
-    result = pynotation->convertToPY(convert_strs, &py_results); 
+    result = pynotation->convertToPY(convert_strs, &py_results);
     if(result) {
         array_init(return_value);
         int i = 0;
@@ -342,7 +342,7 @@ PHP_METHOD(Pinyin, exactConvert)
     if(get_tone) {
         result = pynotation->exactToTonePY(str, &py_result);
     } else {
-        result = pynotation->exactToPY(str, &py_result); 
+        result = pynotation->exactToPY(str, &py_result);
     }
     if(result) {
         array_init(return_value);
@@ -363,7 +363,7 @@ PHP_METHOD(Pinyin, generateDict)
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &from_str, &from_len, &to_str, &to_len) == FAILURE) {
         RETURN_FALSE;
     }
-    
+
     if(pynotation->generateDict(from_str, to_str)) {
         RETURN_TRUE;
     } else {
