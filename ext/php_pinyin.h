@@ -38,7 +38,7 @@ extern "C" {
 #endif
 }
 
-#define PHP_PINYIN_VERSION "0.1.0"
+#define PHP_PINYIN_VERSION "0.1.2"
 
 #include "IPYFactory.h"
 #include <iostream>
