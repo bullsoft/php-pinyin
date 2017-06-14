@@ -279,7 +279,7 @@ PHP_METHOD(Pinyin, multiConvert)
     string strtmp;
     strshash = Z_ARRVAL(strs);
     for (zend_hash_internal_pointer_reset_ex(strshash, &pointer);
-             zend_hash_get_current_data_ex(strshash, (void **)&str, &pointer) == SUCCESS;
+             (str = zend_hash_get_current_data_ex(strshash, &pointer)) != NULL;
              zend_hash_move_forward_ex(strshash, &pointer)) {
         convert_to_string_ex(str);
         strtmp.assign(Z_STRVAL_P(str), Z_STRLEN_P(str));
