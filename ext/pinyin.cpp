@@ -236,7 +236,7 @@ PHP_METHOD(Pinyin, convert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char *characters   = NULL;
-    long  len;
+    size_t   len;
     zend_bool get_tone = 0;
     bool result = 0;
 
@@ -328,7 +328,7 @@ PHP_METHOD(Pinyin, exactConvert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     char        *str        = NULL;
-    long         len;
+    size_t       len;
     zend_bool    get_tone   = 0;
     bool         result     = 0;
 
@@ -356,8 +356,8 @@ PHP_METHOD(Pinyin, exactConvert)
 PHP_METHOD(Pinyin, generateDict)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
-    char *from_str, *to_str;
-    long  from_len, to_len;
+    char  *from_str, *to_str;
+    size_t from_len, to_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &from_str, &from_len, &to_str, &to_len) == FAILURE) {
         RETURN_FALSE;
     }
