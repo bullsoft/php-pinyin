@@ -265,8 +265,8 @@ PHP_METHOD(Pinyin, convert)
 PHP_METHOD(Pinyin, multiConvert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
-    zval         strs, *str;
-    zend_array  *strshash;
+    zval        *strs, *content;
+    zend_string *key;
     HashPosition pointer;
     bool         result     = 0;
     int          strs_num   = 0;
@@ -277,15 +277,14 @@ PHP_METHOD(Pinyin, multiConvert)
 
     vector<string> convert_strs;
     string strtmp;
-    strshash = Z_ARRVAL(strs);
-    for (zend_hash_internal_pointer_reset_ex(strshash, &pointer);
-             (str = zend_hash_get_current_data_ex(strshash, &pointer)) != NULL;
-             zend_hash_move_forward_ex(strshash, &pointer)) {
-        convert_to_string_ex(str);
-        strtmp.assign(Z_STRVAL_P(str), Z_STRLEN_P(str));
+
+    ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARRVAL_P(strs), key, content) {
+        zend_string *str = zval_get_string(content);
+        strtmp.assign(ZSTR_VAL(str), ZSTR_LEN(str));
         convert_strs.push_back(strtmp);
         strs_num++;
-    }
+        zend_string_release(str);
+    } ZEND_HASH_FOREACH_END();
 
     vector<vector<string> * > py_results;
     py_results.reserve(strs_num);
