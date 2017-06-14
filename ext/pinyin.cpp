@@ -183,10 +183,10 @@ PHP_METHOD(Pinyin, __construct)
 {
     IPYNotation *pynotation = IPYFactory::getPYInstance();
     zval        *self       = getThis();
-    zval        *z_pinyin;
+    zval         z_pinyin;
 
-    ZVAL_RES(z_pinyin, zend_register_resource(pynotation, le_pinyin_notation_link));
-    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL("_pynotation"), z_pinyin);
+    ZVAL_RES(&z_pinyin, zend_register_resource(pynotation, le_pinyin_notation_link));
+    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL("_pynotation"), &z_pinyin);
 }
 
 PHP_METHOD(Pinyin, __destruct)
