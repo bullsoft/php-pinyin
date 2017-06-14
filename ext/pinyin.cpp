@@ -375,7 +375,7 @@ static IPYNotation *get_pinyin_notation(zval *cls)
     IPYNotation *pynotation;
     TSRMLS_FETCH();
     pylink     = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL("_pynotation"), 0, NULL);
-    pynotation = (IPYNotation *)zend_fetch_resource2(Z_RES_P(pylink), PINYIN_NOTATION_LINK_DESC, le_pinyin_notation_link);
+    pynotation = (IPYNotation *)zend_fetch_resource(Z_RES_P(pylink), PINYIN_NOTATION_LINK_DESC, le_pinyin_notation_link);
 
     if (!pynotation) {
         php_error_docref(NULL, E_WARNING, "Wrong resource handler for IPYNotation.");
