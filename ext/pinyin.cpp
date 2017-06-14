@@ -60,21 +60,20 @@ static zend_function_entry pinyin_methods[] = {
 /* }}} */
 
 /* {{{ pinyin_module_entry
+ *
+ * We have no globals and deps here.
+ *
  */
 zend_module_entry pinyin_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
 	STANDARD_MODULE_HEADER,
-#endif
 	"pinyin",
 	pinyin_methods,
 	PHP_MINIT(pinyin),
 	PHP_MSHUTDOWN(pinyin),
-	PHP_RINIT(pinyin),		/* Replace with NULL if there's nothing to do at request start */
-	PHP_RSHUTDOWN(pinyin),	/* Replace with NULL if there's nothing to do at request end */
+	PHP_RINIT(pinyin),
+	PHP_RSHUTDOWN(pinyin),
 	PHP_MINFO(pinyin),
-#if ZEND_MODULE_API_NO >= 20010901
-	PHP_PINYIN_VERSION, /* Replace with version number for your extension */
-#endif
+	PHP_PINYIN_VERSION,
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
