@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 5                                                        |
+  | PHP Version 7                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2012 The PHP Group                                |
+  | Copyright (c) 2013-2017 BullSoft                                     |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -13,7 +13,7 @@
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
   | Author: Gu Weigang     <guweigang@baidu.com>                         |
-  |         Shang Yuanchun <shangyuanchun@baidu.com>                     |
+  |         Shang Yuanchun <idealities@gmail.com>                        |
   +----------------------------------------------------------------------+
 */
 
