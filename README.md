@@ -34,11 +34,11 @@ This is upgraded from old php-pinyin for php 5.x.
 
 ### Install
 
-1. $ cd /path/to/php-pinyin
-2. $ /path/to/php/bin/phpize
-3. $ ./configure --with-php-config=/path/to/php/bin/php-config --with-baidu-pinyin=/path/to/pinyin
-4. $ make
-5. $ make install
+1. cd /path/to/php-pinyin/ext
+2. /path/to/php/bin/phpize
+3. ./configure --with-php-config=/path/to/php/bin/php-config --with-baidu-pinyin=/path/to/pinyin
+4. make
+5. make install
 
 Here `/path/to/pinyin` is the directory where you copied `libpinyin` to.
 
