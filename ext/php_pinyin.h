@@ -48,6 +48,8 @@ extern "C" {
 using namespace std;
 using namespace NLP::Pinyin;
 
+#define PY_NOTATION     "_pynotation"
+#define PY_DICT_LOADED  "_dict_loaded"
 
 enum Dict_Type {
     TY_DICT  = 1,

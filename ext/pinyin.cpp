@@ -37,10 +37,9 @@ static int le_pinyin_notation_link;
 #define PINYIN_NOTATION_LINK_DESC "Pinyin Notation"
 
 zend_class_entry *pinyin_ce;
-enum Dict_Type;
-
 
 static IPYNotation *get_pinyin_notation(zval *cls);
+static bool is_dict_loaded(zval *cls);
 
 /* {{{ pinyin_methods[]
  *
@@ -126,7 +125,8 @@ PHP_MINIT_FUNCTION(pinyin)
     zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("DY_DICT"), DY_DICT);
     zend_declare_class_constant_long(pinyin_ce, ZEND_STRL("BME_DICT"), BME_DICT);
 
-    zend_declare_property_null(pinyin_ce, ZEND_STRL("_pynotation"), ZEND_ACC_PRIVATE);
+    zend_declare_property_null(pinyin_ce, ZEND_STRL(PY_NOTATION), ZEND_ACC_PRIVATE);
+    zend_declare_property_bool(pinyin_ce, ZEND_STRL(PY_DICT_LOADED), 0, ZEND_ACC_PRIVATE);
 
     // No destructor handler here, we will destroy IPYNotation in class's destructor
     le_pinyin_notation_link = zend_register_list_destructors_ex(
@@ -186,7 +186,7 @@ PHP_METHOD(Pinyin, __construct)
     zval         z_pinyin;
 
     ZVAL_RES(&z_pinyin, zend_register_resource(pynotation, le_pinyin_notation_link));
-    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL("_pynotation"), &z_pinyin);
+    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL(PY_NOTATION), &z_pinyin);
 }
 
 PHP_METHOD(Pinyin, __destruct)
@@ -197,7 +197,8 @@ PHP_METHOD(Pinyin, __destruct)
 
 PHP_METHOD(Pinyin, loadDict)
 {
-    IPYNotation *pynotation = get_pinyin_notation(getThis());
+    zval        *self       = getThis();
+    IPYNotation *pynotation = get_pinyin_notation(self);
     char *path = NULL;
     size_t     len;
     zend_long  dict_type; // actually its value is of type enum Dict_Type
@@ -229,6 +230,10 @@ PHP_METHOD(Pinyin, loadDict)
             RETURN_FALSE;
             break;
     }
+
+    zval loaded;
+    ZVAL_BOOL(&loaded, 1);
+    zend_update_property(Z_OBJCE_P(self), self, ZEND_STRL(PY_DICT_LOADED), &loaded);
     RETURN_TRUE;
 }
 
@@ -241,6 +246,10 @@ PHP_METHOD(Pinyin, convert)
     bool result = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "s|b", &characters, &len, &get_tone) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    if (!is_dict_loaded(getThis())) {
         RETURN_FALSE;
     }
 
@@ -272,6 +281,10 @@ PHP_METHOD(Pinyin, multiConvert)
     int          strs_num   = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &strs) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    if (!is_dict_loaded(getThis())) {
         RETURN_FALSE;
     }
 
@@ -335,6 +348,10 @@ PHP_METHOD(Pinyin, exactConvert)
         RETURN_FALSE;
     }
 
+    if (!is_dict_loaded(getThis())) {
+        RETURN_FALSE;
+    }
+
     vector<string> py_result;
     if(get_tone) {
         result = pynotation->exactToTonePY(str, &py_result);
@@ -361,6 +378,10 @@ PHP_METHOD(Pinyin, generateDict)
         RETURN_FALSE;
     }
 
+    if (!is_dict_loaded(getThis())) {
+        RETURN_FALSE;
+    }
+
     if(pynotation->generateDict(from_str, to_str)) {
         RETURN_TRUE;
     } else {
@@ -372,8 +393,8 @@ static IPYNotation *get_pinyin_notation(zval *cls)
 {
     zval        *pylink;
     IPYNotation *pynotation;
-    TSRMLS_FETCH();
-    pylink     = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL("_pynotation"), 0, NULL);
+
+    pylink     = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL(PY_NOTATION), 0, NULL);
     pynotation = (IPYNotation *)zend_fetch_resource(Z_RES_P(pylink), PINYIN_NOTATION_LINK_DESC, le_pinyin_notation_link);
 
     if (!pynotation) {
@@ -381,6 +402,14 @@ static IPYNotation *get_pinyin_notation(zval *cls)
     }
 
     return pynotation;
+}
+
+static bool is_dict_loaded(zval *cls)
+{
+    zval *loaded;
+
+    loaded = zend_read_property(Z_OBJCE_P(cls), cls, ZEND_STRL(PY_DICT_LOADED), 0, NULL);
+    return loaded && Z_TYPE_P(loaded) == IS_TRUE;
 }
 
 /*
