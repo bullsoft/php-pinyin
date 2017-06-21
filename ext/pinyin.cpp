@@ -275,7 +275,6 @@ PHP_METHOD(Pinyin, multiConvert)
 {
     IPYNotation *pynotation = get_pinyin_notation(getThis());
     zval        *strs, *content;
-    zend_string *key;
     HashPosition pointer;
     bool         result     = 0;
     int          strs_num   = 0;
@@ -291,7 +290,7 @@ PHP_METHOD(Pinyin, multiConvert)
     vector<string> convert_strs;
     string strtmp;
 
-    ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARRVAL_P(strs), key, content) {
+    ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(strs), content) {
         zend_string *str = zval_get_string(content);
         strtmp.assign(ZSTR_VAL(str), ZSTR_LEN(str));
         convert_strs.push_back(strtmp);
